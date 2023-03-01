@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kode4Hue.Messaging.Kafka.Client", "Kode4Hue.Messaging.Kafka.Client\Kode4Hue.Messaging.Kafka.Client.csproj", "{8EE27674-738E-4227-BD6D-825AE61C9B61}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7E6AE279-13E4-439C-9C85-D91E865CBDCA}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+		nuget.config = nuget.config
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8EE27674-738E-4227-BD6D-825AE61C9B61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EE27674-738E-4227-BD6D-825AE61C9B61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EE27674-738E-4227-BD6D-825AE61C9B61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EE27674-738E-4227-BD6D-825AE61C9B61}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BF356A28-70EA-4C28-912B-D635DB3087DB}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,33 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+    
+env:
+  PROJECT_FOLDER: 'Kode4Hue.Messaging.Kafka.Client'
+  PROJECT_SOLUTION_FILE_PATH: 'Kode4Hue.Messaging.Kafka.Client/Kode4Hue.Messaging.Kafka.Client.sln'
+  PROJECT_FILE_PATH: 'Kode4Hue.Messaging.Kafka.Client/Kode4Hue.Messaging.Kafka.Client.csproj'
+  PACKAGE_OUTPUT_DIR: '${{ github.workspace }}/artefacts'
+  NUGET_SOURCE_URL: 'https://nuget.pkg.github.com/Kode4Hue/index.json'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 7.0.x
+    - name: Dotnet Restore dependencies
+      run: dotnet restore ${{ env.PROJECT_SOLUTION_FILE_PATH }}
+    - name: Dotnet Build Project
+      run: dotnet build '${{ env.PROJECT_FILE_PATH }}' --configuration Release
+    - name: Package the library
+      run: dotnet pack ${{ env.PROJECT_FILE_PATH }} --no-restore --no-build --configuration Release --output ${{ env.PACKAGE_OUTPUT_DIR }} 
+    - name: Run Tests
+      run: dotnet test --no-build --verbosity normal
+    - name: Publish the Package to Github
+      run: dotnet nuget push '${{ env.PACKAGE_OUTPUT_DIR }}/*.nupkg' -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }} --skip-duplicate
