@@ -2,7 +2,7 @@
 
 namespace Kode4Hue.Messaging.Kafka.Client.Extensions
 {
-    public static class ConfigurationExtensions
+    internal static class ConfigurationExtensions
     {
         public static KafkaConfig GenerateKafkaConfig(this IConfigurationRoot configurationRoot)
         {

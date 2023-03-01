@@ -13,9 +13,7 @@ namespace Kode4Hue.Messaging.Kafka.Client.Extensions
             this IServiceCollection services,
             IConfigurationRoot configurationRoot)
         {
-            var kafkaConfig = new KafkaConfig();
-            configurationRoot.GetSection(nameof(KafkaConfig))
-                .Bind(kafkaConfig);
+            var kafkaConfig = configurationRoot.GenerateKafkaConfig();
 
             services.AddKafka(kafka =>
                 kafka.AddCluster(cluster =>
