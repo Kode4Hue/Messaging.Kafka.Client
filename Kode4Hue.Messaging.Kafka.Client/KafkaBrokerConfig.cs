@@ -3,19 +3,12 @@
     public class KafkaBrokerConfig
     {
 
-        private readonly string _brokerUrl;
-        private readonly int _port;
-
-        public KafkaBrokerConfig(string brokerUrl, int port)
-        {
-            _brokerUrl = brokerUrl;
-            _port = port;
-
-        }
+        public string Server { get; set; }
+        public int Port { get; set; }
 
         public string GetBrokerUrl()
         {
-            return string.Concat(_brokerUrl, ":", _port);
+            return string.Concat(Server, ":", Port);
         }
     }
 }

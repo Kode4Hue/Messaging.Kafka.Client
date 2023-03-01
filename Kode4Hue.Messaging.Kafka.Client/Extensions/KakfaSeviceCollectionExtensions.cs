@@ -1,7 +1,9 @@
 ﻿using KafkaFlow;
 using KafkaFlow.Serializer;
 using KafkaFlow.TypedHandler;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Kode4Hue.Messaging.Kafka.Client.Extensions
 {
@@ -9,19 +11,21 @@ namespace Kode4Hue.Messaging.Kafka.Client.Extensions
     {
         public static IServiceCollection AddKafkaConfiguration(
             this IServiceCollection services,
-            KafkaConfig config)
+            IConfigurationRoot configurationRoot)
         {
-
+            var kafkaConfig = new KafkaConfig();
+            configurationRoot.GetSection(nameof(KafkaConfig))
+                .Bind(kafkaConfig);
 
             services.AddKafka(kafka =>
                 kafka.AddCluster(cluster =>
                 {
                     cluster
-                        .WithBrokers(new[] { config.BrokerConfiguration.GetBrokerUrl() });
+                        .WithBrokers(new[] { kafkaConfig.BrokerConfiguration.GetBrokerUrl() });
 
-                    if (config.ProducerBuilderConfigurations is not null)
+                    if (kafkaConfig.ProducerBuilderConfigurations is not null)
                     {
-                        foreach (var producerBuilderConfiguration in config.ProducerBuilderConfigurations)
+                        foreach (var producerBuilderConfiguration in kafkaConfig.ProducerBuilderConfigurations)
                         {
                             var topicConfiguration = producerBuilderConfiguration.TopicConfiguration;
                             cluster.CreateTopicIfNotExists(
@@ -38,10 +42,10 @@ namespace Kode4Hue.Messaging.Kafka.Client.Extensions
                     }
 
 
-                    if (config.ConsumerBuilderConfigurations is not null)
+                    if (kafkaConfig.ConsumerBuilderConfigurations is not null)
                     {
 
-                        foreach (var consumerBuilderConfiguration in config.ConsumerBuilderConfigurations)
+                        foreach (var consumerBuilderConfiguration in kafkaConfig.ConsumerBuilderConfigurations)
                         {
                             var topicConfiguration = consumerBuilderConfiguration.TopicConfiguration;
 
