@@ -22,7 +22,7 @@ jobs:
       with:
         dotnet-version: 7.0.x
     - name: Dotnet Restore dependencies
-      run: dotnet restore '${{ env.PROJECT_SOLUTION_FILE_PATH }}'
+      run: dotnet restore
     - name: Dotnet Build Project
       run: dotnet build '${{ env.PROJECT_FILE_PATH }}' --configuration Release
     - name: Package the library
