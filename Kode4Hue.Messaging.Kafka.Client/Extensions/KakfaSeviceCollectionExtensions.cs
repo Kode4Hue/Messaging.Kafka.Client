@@ -15,33 +15,44 @@ namespace Kode4Hue.Messaging.Kafka.Client.Extensions
         {
             var kafkaConfig = configurationRoot.GenerateKafkaConfig();
 
-            services.AddKafka(kafka =>
+            if (kafkaConfig.ProducerBuilderConfigurations?.Count > 0)
+            {
+                services.AddKafka(kafka =>
                 kafka.AddCluster(cluster =>
                 {
                     cluster
                         .WithBrokers(new[] { kafkaConfig.BrokerConfiguration.GetBrokerUrl() });
 
-                    if (kafkaConfig.ProducerBuilderConfigurations is not null)
+
+                    foreach (var producerBuilderConfiguration in kafkaConfig.ProducerBuilderConfigurations)
                     {
-                        foreach (var producerBuilderConfiguration in kafkaConfig.ProducerBuilderConfigurations)
-                        {
-                            var topicConfiguration = producerBuilderConfiguration.TopicConfiguration;
-                            cluster.CreateTopicIfNotExists(
-                                                topicConfiguration.TopicName,
-                                                numberOfPartitions: topicConfiguration.NumberOfPartitions,
-                                                replicationFactor: topicConfiguration.ReplicationFactor);
-                            cluster.AddProducer(
-                                                producerBuilderConfiguration.ProducerName,
-                                                producer: producer => producer
-                                                    .DefaultTopic(topicConfiguration.TopicName)
-                                                    .AddMiddlewares(middlewares => middlewares
-                                                        .AddSerializer<ProtobufNetSerializer>()));
-                        }
+                        var topicConfiguration = producerBuilderConfiguration.TopicConfiguration;
+                        cluster.CreateTopicIfNotExists(
+                                            topicConfiguration.TopicName,
+                                            numberOfPartitions: topicConfiguration.NumberOfPartitions,
+                                            replicationFactor: topicConfiguration.ReplicationFactor);
+                        cluster.AddProducer(
+                                            producerBuilderConfiguration.ProducerName,
+                                            producer: producer => producer
+                                                .DefaultTopic(topicConfiguration.TopicName)
+                                                .AddMiddlewares(middlewares => middlewares
+                                                    .AddSerializer<ProtobufNetSerializer>()));
                     }
+                }));
 
+            }
 
-                    if (kafkaConfig.ConsumerBuilderConfigurations is not null)
+            if (kafkaConfig.ConsumerBuilderConfigurations?.Count > 0)
+            {
+
+                services.AddKafkaFlowHostedService(
+                kafka => kafka
+                    .UseMicrosoftLog()
+                    .AddCluster(cluster =>
                     {
+                        cluster
+                            .WithBrokers(new[] { kafkaConfig.BrokerConfiguration.GetBrokerUrl() });
+
 
                         foreach (var consumerBuilderConfiguration in kafkaConfig.ConsumerBuilderConfigurations)
                         {
@@ -59,10 +70,11 @@ namespace Kode4Hue.Messaging.Kafka.Client.Extensions
                                         handlers.AddHandlers(consumerBuilderConfiguration.MessageHandlers.Select(x => x.GetType())))
                                 )
                             );
-                        }
-                    }
 
-                }));
+                        }
+                    }));
+
+            }
 
             return services;
         }
